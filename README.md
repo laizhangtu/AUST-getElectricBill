@@ -6,14 +6,14 @@
 
 ## 功能
 
-- 获取剩余电量，并通过pushplus推送消息
-- 自动充值
+- 定时获取剩余电量（默认每2小时获取一次），并在电量小于10度时通过pushplus推送消息
+- 自动充值（默认关闭）
 
 ## 使用方法
 
 1. 克隆项目到本地：
    ```bash
-   git clone https://github.com/yourusername/AUST-getElectricBill.git
+   git clone https://github.com/laizhangtu/AUST-getElectricBill.git
    cd AUST-getElectricBill
    ```
 
