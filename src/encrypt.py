@@ -1,11 +1,11 @@
 import base64
-import random
+import secrets
 from Crypto.Cipher import AES
 
 AES_CHARS = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678' # 详见https://authserver.aust.edu.cn/authserver/customTheme/static/common/encrypt.js?v=20230815.161557 line 737
 
 def random_string(length):
-    return ''.join(random.choice(AES_CHARS) for _ in range(length))
+    return ''.join(secrets.choice(AES_CHARS) for _ in range(length))
 
 def pkcs7_pad(data):
     bs = AES.block_size  # 16
