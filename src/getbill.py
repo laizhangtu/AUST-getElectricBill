@@ -3,6 +3,18 @@ import json
 from bs4 import BeautifulSoup
 from encrypt import encrypt_password
 
+PUSHPLUS_TOKEN = "" # 你的Token
+def pushplus_notification(token, title, content):
+    payload = {
+        "token": token,
+        "title": title,
+        "content": content
+    }
+    try:
+        r = requests.post("http://www.pushplus.plus/send", json=payload)
+        # 可处理返回结果，如：print(r.text)
+    except Exception as e:
+        print("Pushplus推送失败:", e)
 def get_jsessionid(username,ivpassword):
     """
     获取JSESSIONID
@@ -79,7 +91,9 @@ def get_electric_bill(id, roomNumber, username, ivpassword):
     rest_elec_degree = result.get('restElecDegree')
     if rest_elec_degree <10 :
         print("电量不足10度,请及时充值")
-    print(rest_elec_degree)
+        print(rest_elec_degree)
+        if PUSHPLUS_TOKEN:
+            pushplus_notification(PUSHPLUS_TOKEN, "电量不足通知", f"剩余电量: {rest_elec_degree} 度, 请及时充值。")
 
 
 if __name__ == '__main__':
