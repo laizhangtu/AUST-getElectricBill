@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from main import ROOMNUMBER, get_jsessionid, get_electric_bill
+from main import ROOMNUMBER, BUILDINGNUMBER, ID, get_jsessionid, get_electric_bill
 
 def charge_fee(money):
     """
@@ -27,8 +27,22 @@ def charge_fee(money):
         'paidMoney': money,
         '_csrf': _csrf
     }
+    # 合肥校区未经测试，请自行测试
+    # hefei_data = {
+    #     'elcsysid': '2',
+    #     'elcarea': 101,
+    #     'elcbuis': BUILDINGNUMBER,
+    #     'roomNo': ROOMNUMBER,
+    #     'dumpEnergy': get_electric_bill(),
+    #     'paidMoney': money,
+    #     'route':'',
+    #     '_csrf': _csrf
+    # }
     bill_url = "http://ecard.aust.edu.cn/epay/electric_simple/load4paidelectricbill"
-    res = session.post(bill_url, data=data, cookies=cookies)
+    if ID == 1:
+        res = session.post(bill_url, data=data, cookies=cookies)
+    # if ID == 2:
+    #     res = session.post(bill_url, data=hefei_data, cookies=cookies)
     # print(res.text)
     soup1 = BeautifulSoup(res.text, 'html.parser')
     billno = soup1.find('input', {'name': 'billno'})['value']

@@ -2,16 +2,15 @@ import requests
 import json
 from bs4 import BeautifulSoup
 from encrypt import encrypt_password
-import time  # 新增导入time模块
-import schedule  # 新增导入schedule
-
+import time
+import schedule
 
 PUSHPLUS_TOKEN = "" # 你的Token
 ID = 1 #校区 淮南1 合肥2
-ROOMNUMBER = 0 # 房间号
+ROOMNUMBER = 0 # 房间号 淮南校区6位数，合肥校区只有至真楼一层是1位数，其余是3位数
 USERNAME = 0 # 学号
 IVPASSWORD = "password" # 密码
-
+BUILDINGNUMBER = 1 # 楼号 淮南校区不需要    合肥校区 真1 善2 和3 诚4
 
 def pushplus_notification(token, title, content):
     """
@@ -86,15 +85,28 @@ def get_electric_bill():
     Returns:
         float : rest_elec_degree
     """
-    JSESSIONID = get_jsessionid()
-    url = f"http://ecard.aust.edu.cn/epay/electric_simple/queryelectricbill?sysid={ID}&roomNo={ROOMNUMBER}"
+    jsessionid = get_jsessionid()
+    url = f"http://ecard.aust.edu.cn/epay/electric_simple/queryelectricbill"
+    params = {
+        'sysid': ID,
+        'roomNo': ROOMNUMBER
+    }
+    hefei_params = {
+        'sysid': ID,
+        'roomNo': ROOMNUMBER,
+        'elcarea': '101',
+        'elcbuis': BUILDINGNUMBER
+    }
     cookies = {
-        'JSESSIONID': JSESSIONID,
+        'JSESSIONID': jsessionid,
         'LOGIN': f'{USERNAME}',
         'SCREEN_NAME': 'ZCpfHbVMV7cxjUxle56IkQ==',
         'GUEST_LANGUAGE_ID': 'zh_CN'
     }
-    response = requests.get(url, cookies=cookies)
+    if ID == 1:
+        response = requests.get(url, params= params, cookies=cookies)
+    if ID == 2:
+        response = requests.get(url, params=hefei_params, cookies=cookies)
     response_text = response.text.lstrip('\ufeff')
     result = json.loads(response_text)
     rest_elec_degree = result.get('restElecDegree')
